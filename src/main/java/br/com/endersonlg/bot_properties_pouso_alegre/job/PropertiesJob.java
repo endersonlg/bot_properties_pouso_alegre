@@ -33,28 +33,36 @@ public class PropertiesJob {
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-  @Scheduled(fixedDelay = 300000)
+  @Scheduled(fixedRate = 100000)
   public void execute() {
     try {
 
       List<GenericRealEstate> genericRealEstates = Arrays.asList(
-          new GenericRealEstate("https://www.aristeurios.com.br", "aristeu"),
-          new GenericRealEstate("https://www.tadeuimoveis.imb.br", "tadeu imoveis"),
-          new GenericRealEstate("https://www.imobiliariapantanal.com.br", "pantanal"),
-          new GenericRealEstate("https://www.imobiliariapedraforte.com.br", "pedra forte"),
-          new GenericRealEstate("https://www.spheraimoveis.com.br", "sphera"),
-          new GenericRealEstate("https://www.imoveisimpacta.com.br", "impacta"),
-          new GenericRealEstate("https://www.nadirimoveis.com.br", "nadir"),
-          new GenericRealEstate("https://www.tiagosilvaimoveis.com.br", "tiagosilvaimoveis"),
-          new GenericRealEstate("https://www.imobiliariafonsecapa.com.br", "imobiliariafonsecapa"),
-          new GenericRealEstate("https://www.jairosilvaimoveis.com.br", "jairosilvaimoveis"),
-          new GenericRealEstate("https://www.imobiliariafranciscanunes.com.br", "imobiliariafranciscanunes"),
-          new GenericRealEstate("https://www.paimoveispa.com.br", "paimoveispa"),
-          new GenericRealEstate("https://www.vltimoveis.com.br", "vltimoveis"),
-          new GenericRealEstate("https://www.lealimoveis.com", "lealimoveis"),
-          new GenericRealEstate("https://www.kdimoveis.imb.br", "kdimoveis"));
+          new GenericRealEstate("https://www.aristeurios.com.br", "aristeu")
+      // new GenericRealEstate("https://www.tadeuimoveis.imb.br", "tadeu imoveis"),
+      // new GenericRealEstate("https://www.imobiliariapantanal.com.br", "pantanal"),
+      // new GenericRealEstate("https://www.imobiliariapedraforte.com.br", "pedra
+      // forte"),
+      // new GenericRealEstate("https://www.spheraimoveis.com.br", "sphera"),
+      // new GenericRealEstate("https://www.imoveisimpacta.com.br", "impacta"),
+      // new GenericRealEstate("https://www.nadirimoveis.com.br", "nadir"),
+      // new GenericRealEstate("https://www.tiagosilvaimoveis.com.br",
+      // "tiagosilvaimoveis"),
+      // new GenericRealEstate("https://www.imobiliariafonsecapa.com.br",
+      // "imobiliariafonsecapa"),
+      // new GenericRealEstate("https://www.jairosilvaimoveis.com.br",
+      // "jairosilvaimoveis"),
+      // new GenericRealEstate("https://www.imobiliariafranciscanunes.com.br",
+      // "imobiliariafranciscanunes"),
+      // new GenericRealEstate("https://www.paimoveispa.com.br", "paimoveispa"),
+      // new GenericRealEstate("https://www.vltimoveis.com.br", "vltimoveis"),
+      // new GenericRealEstate("https://www.lealimoveis.com", "lealimoveis"),
+      // new GenericRealEstate("https://www.kdimoveis.imb.br", "kdimoveis")
+      );
 
       List<PropertyEntity> properties = new ArrayList<PropertyEntity>();
+
+      System.out.println("aqui propriedade:: " + properties.size());
 
       genericRealEstates.forEach(genericRealEstate -> {
         properties.addAll(genericRealEstateService.execute(genericRealEstate.getUrl(),
@@ -69,6 +77,8 @@ public class PropertiesJob {
       String formattedTime = currentTime.format(formatter);
 
       String timeAndQuantity = "Atualizado as: " + formattedTime + "\nQuantidade adicionada: " + properties.size();
+
+      System.out.println(timeAndQuantity);
 
       telegramService.sendText(timeAndQuantity);
 
