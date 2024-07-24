@@ -1,0 +1,10 @@
+services:
+  postgres:
+    container_name: bot_properties_pouso_alegre
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=bot_properties_pouso_alegre
