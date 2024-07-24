@@ -1,5 +1,7 @@
 package br.com.endersonlg.bot_properties_pouso_alegre.job;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +61,16 @@ public class PropertiesJob {
             "/api/listings/para-alugar/apartamento/pouso-alegre?preco-de-locacao=600~2000&ordenar=recentes",
             genericRealEstate.getName()));
       });
+
+      LocalTime currentTime = LocalTime.now();
+
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+      String formattedTime = currentTime.format(formatter);
+
+      String timeAndQuantity = "Atualizado as: " + formattedTime + "\nQuantidade adicionada: " + properties.size();
+
+      telegramService.sendText(timeAndQuantity);
 
       for (int i = 0; i < properties.size(); i++) {
         final int index = i;
