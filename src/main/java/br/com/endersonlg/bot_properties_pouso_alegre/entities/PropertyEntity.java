@@ -42,6 +42,12 @@ public class PropertyEntity {
 
   private String neighborhood;
 
+  private String area;
+
+  private String bedrooms;
+
+  private String addedIn;
+
   @CreationTimestamp
   private LocalDateTime createdAt;
 }

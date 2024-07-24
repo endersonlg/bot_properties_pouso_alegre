@@ -46,7 +46,16 @@ public class GenericRealEstateService {
               .pictureUrl(genericData.getPicture_full())
               .url(baseUrl + genericData.getUrl())
               .neighborhood(genericData.getNeighborhood())
+              .addedIn(genericData.getUpdated_at())
               .build();
+
+          if (genericData.getArea().size() > 1) {
+            propertyEntity.setArea(genericData.getArea().get(0));
+          }
+
+          if (genericData.getBedrooms().size() > 1) {
+            propertyEntity.setBedrooms(genericData.getBedrooms().get(0));
+          }
 
           properties.add(propertyEntity);
         }

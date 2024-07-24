@@ -8,6 +8,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import br.com.endersonlg.bot_properties_pouso_alegre.entities.PropertyEntity;
 import br.com.endersonlg.bot_properties_pouso_alegre.telegram.Bot;
+import br.com.endersonlg.bot_properties_pouso_alegre.utils.DateTimeUtils;
 import jakarta.annotation.PostConstruct;
 
 @Service
@@ -32,9 +33,22 @@ public class TelegramService {
       bot.sendPhoto(-1002203224895L, propertyEntity.getPictureUrl());
 
       String text = propertyEntity.getTitle() + "\n" +
-          propertyEntity.getNeighborhood() + "\n" +
-          "R$:" + propertyEntity.getRent() + "\n" +
-          propertyEntity.getRealEstate() + "\n" +
+          "BAIRRO: " + propertyEntity.getNeighborhood() + "\n";
+
+      if (!propertyEntity.getBedrooms().isEmpty()) {
+        text = text + "QUARTOS: " + propertyEntity.getBedrooms() + "\n";
+      }
+
+      if (!propertyEntity.getArea().isEmpty()) {
+        text = text + "AREA: " + propertyEntity.getArea() + "\n";
+      }
+
+      String addedIn = DateTimeUtils.formatISODateTime(propertyEntity.getAddedIn(), "dd/MM/yyyy HH:mm");
+
+      text = text + "ADICIONADO EM: " + addedIn + "\n";
+
+      text = text + "VALOR TOTAL: R$" + propertyEntity.getRent() + "\n" +
+          "IMOBILIÁRIA: " + propertyEntity.getRealEstate() + "\n" +
           propertyEntity.getUrl();
 
       bot.sendText(-1002203224895L, text);

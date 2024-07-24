@@ -15,6 +15,9 @@ public class GenericRealEstateResponseDataDTO {
     private String picture_full;
     private String url;
     private String neighborhood;
+    private List<String> area;
+    private List<String> bedrooms;
+    private String updated_at;
   }
 
 }
