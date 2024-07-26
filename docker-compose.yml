@@ -1,6 +1,10 @@
+volumes:
+  postgres_data:
+
 services:
   postgres:
-    container_name: bot_properties_pouso_alegre
+    restart: always
+    container_name: bot_properties_pouso_alegre_postgres
     image: postgres:latest
     ports:
       - "5432:5432"
@@ -8,3 +12,19 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=bot_properties_pouso_alegre
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  app:
+    restart: always
+    container_name: bot_properties_pouso_alegre_webservice
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/bot_properties_pouso_alegre
+      - DATABASE_USERNAME=admin
+      - DATABASE_PASSWORD=admin
