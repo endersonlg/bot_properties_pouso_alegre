@@ -28,3 +28,4 @@ services:
       - DATABASE_URL=jdbc:postgresql://postgres:5432/bot_properties_pouso_alegre
       - DATABASE_USERNAME=admin
       - DATABASE_PASSWORD=admin
+      - TZ=America/Sao_Paulo

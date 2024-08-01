@@ -35,17 +35,19 @@ public class TelegramService {
       String text = propertyEntity.getTitle() + "\n" +
           "BAIRRO: " + propertyEntity.getNeighborhood() + "\n";
 
-      if (!propertyEntity.getBedrooms().isEmpty()) {
+      if (propertyEntity.getBedrooms() != null && !propertyEntity.getBedrooms().isBlank()) {
         text = text + "QUARTOS: " + propertyEntity.getBedrooms() + "\n";
       }
 
-      if (!propertyEntity.getArea().isEmpty()) {
+      if (propertyEntity.getArea() != null && !propertyEntity.getArea().isBlank()) {
         text = text + "AREA: " + propertyEntity.getArea() + "\n";
       }
 
-      String addedIn = DateTimeUtils.formatISODateTime(propertyEntity.getAddedIn(), "dd/MM/yyyy HH:mm");
+      if (propertyEntity.getAddedIn() != null && !propertyEntity.getAddedIn().isBlank()) {
+        String addedIn = DateTimeUtils.formatISODateTime(propertyEntity.getAddedIn(), "dd/MM/yyyy HH:mm");
 
-      text = text + "ADICIONADO EM: " + addedIn + "\n";
+        text = text + "ADICIONADO EM: " + addedIn + "\n";
+      }
 
       text = text + "VALOR TOTAL: R$" + propertyEntity.getRent() + "\n" +
           "IMOBILIÁRIA: " + propertyEntity.getRealEstate() + "\n" +

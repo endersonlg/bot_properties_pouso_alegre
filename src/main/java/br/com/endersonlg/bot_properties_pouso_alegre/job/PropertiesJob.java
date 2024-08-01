@@ -16,7 +16,10 @@ import org.springframework.stereotype.Component;
 import br.com.endersonlg.bot_properties_pouso_alegre.dto.GenericRealEstate;
 import br.com.endersonlg.bot_properties_pouso_alegre.entities.PropertyEntity;
 import br.com.endersonlg.bot_properties_pouso_alegre.repositories.PropertyRepository;
+import br.com.endersonlg.bot_properties_pouso_alegre.service.AlligareService;
 import br.com.endersonlg.bot_properties_pouso_alegre.service.GenericRealEstateService;
+import br.com.endersonlg.bot_properties_pouso_alegre.service.MottaService;
+import br.com.endersonlg.bot_properties_pouso_alegre.service.PousoAlegreImoveisService;
 import br.com.endersonlg.bot_properties_pouso_alegre.service.TelegramService;
 
 @Component
@@ -26,14 +29,23 @@ public class PropertiesJob {
   GenericRealEstateService genericRealEstateService;
 
   @Autowired
+  AlligareService alligareService;
+
+  @Autowired
   PropertyRepository propertyRepository;
 
   @Autowired
   TelegramService telegramService;
 
+  @Autowired
+  MottaService mottaService;
+
+  @Autowired
+  PousoAlegreImoveisService pousoAlegreImoveisService;
+
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-  @Scheduled(fixedRate = 1000 * 60 * 60 * 1)
+  @Scheduled(fixedRate = 1000 * 60 * 20 * 1)
   public void execute() {
     try {
 
@@ -60,13 +72,34 @@ public class PropertiesJob {
 
       List<PropertyEntity> properties = new ArrayList<PropertyEntity>();
 
-      System.out.println("aqui propriedade:: " + properties.size());
-
       genericRealEstates.forEach(genericRealEstate -> {
-        properties.addAll(genericRealEstateService.execute(genericRealEstate.getUrl(),
-            "/api/listings/para-alugar/apartamento/pouso-alegre?preco-de-locacao=600~2000&ordenar=recentes",
-            genericRealEstate.getName()));
+        try {
+          properties.addAll(genericRealEstateService.execute(genericRealEstate.getUrl(),
+              "/api/listings/para-alugar/apartamento/pouso-alegre?preco-de-locacao=600~2000&ordenar=recentes",
+              genericRealEstate.getName()));
+
+        } catch (Exception e) {
+          System.out.println(e);
+        }
       });
+
+      try {
+        properties.addAll(alligareService.execute());
+      } catch (Exception e) {
+        System.out.println("Error alligare: " + e.getMessage());
+      }
+
+      try {
+        properties.addAll(mottaService.execute());
+      } catch (Exception e) {
+        System.out.println("Error motta: " + e.getMessage());
+      }
+
+      try {
+        properties.addAll(pousoAlegreImoveisService.execute());
+      } catch (Exception e) {
+        System.out.println("Error pouso alegre imoveis: " + e.getMessage());
+      }
 
       LocalTime currentTime = LocalTime.now();
 
@@ -76,15 +109,14 @@ public class PropertiesJob {
 
       String timeAndQuantity = "Atualizado as: " + formattedTime + "\nQuantidade adicionada: " + properties.size();
 
-      System.out.println(timeAndQuantity);
-
-      telegramService.sendText(timeAndQuantity);
+      if (properties.size() > 0) {
+        telegramService.sendText(timeAndQuantity);
+      }
 
       for (int i = 0; i < properties.size(); i++) {
         final int index = i;
 
         scheduler.schedule(() -> {
-
           propertyRepository.save(properties.get(index));
           telegramService.sendProperty(properties.get(index));
         }, index * 10, TimeUnit.SECONDS);
